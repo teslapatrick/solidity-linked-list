@@ -1,9 +1,9 @@
 # Solidity Linked List
 
 [![NPM Package](https://img.shields.io/npm/v/solidity-linked-list.svg?style=flat-square)](https://www.npmjs.org/package/solidity-linked-list)
-[![Build Status](https://travis-ci.org/vittominacori/solidity-linked-list.svg?branch=master)](https://travis-ci.org/vittominacori/solidity-linked-list)
+[![CI](https://github.com/vittominacori/solidity-linked-list/workflows/CI/badge.svg?branch=master)](https://github.com/vittominacori/solidity-linked-list/actions/)
 [![Coverage Status](https://coveralls.io/repos/github/vittominacori/solidity-linked-list/badge.svg?branch=master)](https://coveralls.io/github/vittominacori/solidity-linked-list?branch=master)
-[![MIT licensed](https://img.shields.io/github/license/vittominacori/solidity-linked-list.svg)](https://github.com/vittominacori/solidity-linked-list/blob/master/LICENSE) 
+[![MIT licensed](https://img.shields.io/github/license/vittominacori/solidity-linked-list.svg)](https://github.com/vittominacori/solidity-linked-list/blob/master/LICENSE)
 
 An utility library for using sorted linked list data structures in your Solidity project.
 
@@ -16,15 +16,15 @@ npm install solidity-linked-list
 ## Usage
 
 ```solidity
-pragma solidity ^0.5.9;
+pragma solidity ^0.8.0;
 
 import "solidity-linked-list/contracts/StructuredLinkedList.sol";
 
 contract MyContract {
     using StructuredLinkedList for StructuredLinkedList.List;
-    
+
     StructuredLinkedList.List list;
-    
+
     // your stuff
 }
 ```
@@ -98,7 +98,7 @@ function getAdjacent(List storage self, uint256 _node, bool _direction) internal
 
 ```solidity
 /**
- * @dev Returns the link of a node `_node` in direction `NEXT`.
+ * @dev Returns the link of a node `_node` in direction `_NEXT`.
  * @param self stored linked list from contract
  * @param _node id of the node to step from
  * @return bool, uint256 true if node exists or false otherwise, next node
@@ -110,7 +110,7 @@ function getNextNode(List storage self, uint256 _node) internal view returns (bo
 
 ```solidity
 /**
- * @dev Returns the link of a node `_node` in direction `PREV`.
+ * @dev Returns the link of a node `_node` in direction `_PREV`.
  * @param self stored linked list from contract
  * @param _node id of the node to step from
  * @return bool, uint256 true if node exists or false otherwise, previous node
@@ -122,7 +122,7 @@ function getPreviousNode(List storage self, uint256 _node) internal view returns
 
 ```solidity
 /**
- * @dev Can be used before `insert` to build an ordered list. 
+ * @dev Can be used before `insert` to build an ordered list.
  * @dev Get the node and then `insertBefore` or `insertAfter` basing on your list order.
  * @dev If you want to order basing on other than `structure.getValue()` override this function
  * @param self stored linked list from contract
@@ -133,37 +133,11 @@ function getPreviousNode(List storage self, uint256 _node) internal view returns
 function getSortedSpot(List storage self, address _structure, uint256 _value) internal view returns (uint256);
 ```
 
-### createLink
-
-```solidity
-/**
- * @dev Creates a bidirectional link between two nodes on direction `_direction`
- * @param self stored linked list from contract
- * @param _node first node for linking
- * @param _link  node to link to in the _direction
- */
-function createLink(List storage self, uint256 _node, uint256 _link, bool _direction) internal;
-```
-
-### insert
-
-```solidity
-/**
- * @dev Insert node `_new` beside existing node `_node` in direction `_direction`.
- * @param self stored linked list from contract
- * @param _node existing node
- * @param _new  new node to insert
- * @param _direction direction to insert node in
- * @return bool true if success, false otherwise
- */
-function insert(List storage self, uint256 _node, uint256 _new, bool _direction) internal returns (bool);
-```
-
 ### insertAfter
 
 ```solidity
 /**
- * @dev Insert node `_new` beside existing node `_node` in direction `NEXT`.
+ * @dev Insert node `_new` beside existing node `_node` in direction `_NEXT`.
  * @param self stored linked list from contract
  * @param _node existing node
  * @param _new  new node to insert
@@ -176,7 +150,7 @@ function insertAfter(List storage self, uint256 _node, uint256 _new) internal re
 
 ```solidity
 /**
- * @dev Insert node `_new` beside existing node `_node` in direction `PREV`.
+ * @dev Insert node `_new` beside existing node `_node` in direction `_PREV`.
  * @param self stored linked list from contract
  * @param _node existing node
  * @param _new  new node to insert
@@ -197,29 +171,50 @@ function insertBefore(List storage self, uint256 _node, uint256 _new) internal r
 function remove(List storage self, uint256 _node) internal returns (uint256);
 ```
 
-### push
+### pushFront
 
 ```solidity
 /**
  * @dev Pushes an entry to the head of the linked list
  * @param self stored linked list from contract
  * @param _node new entry to push to the head
- * @param _direction push to the head (NEXT) or tail (PREV)
  * @return bool true if success, false otherwise
  */
-function push(List storage self, uint256 _node, bool _direction) internal returns (bool);
+function pushFront(List storage self, uint256 _node) internal returns (bool);
 ```
 
-### pop
+### pushBack
 
 ```solidity
 /**
- * @dev Pops the first entry from the linked list
+ * @dev Pushes an entry to the tail of the linked list
  * @param self stored linked list from contract
- * @param _direction pop from the head (NEXT) or the tail (PREV)
+ * @param _node new entry to push to the tail
+ * @return bool true if success, false otherwise
+ */
+function pushBack(List storage self, uint256 _node) internal returns (bool);
+```
+
+### popFront
+
+```solidity
+/**
+ * @dev Pops the first entry from the head of the linked list
+ * @param self stored linked list from contract
  * @return uint256 the removed node
  */
-function pop(List storage self, bool _direction) internal returns (uint256);
+function popFront(List storage self) internal returns (uint256);
+```
+
+### popBack
+
+```solidity
+/**
+ * @dev Pops the first entry from the tail of the linked list
+ * @param self stored linked list from contract
+ * @return uint256 the removed node
+ */
+function popBack(List storage self) internal returns (uint256);
 ```
 
 ## Development
@@ -230,30 +225,50 @@ function pop(List storage self, bool _direction) internal returns (uint256);
 npm install
 ```
 
-## Usage
+### Usage (using Truffle)
 
 Open the Truffle console
 
 ```bash
-npm run console
+npm run truffle:console
 ```
 
-### Compile
+#### Compile
 
 ```bash
-npm run compile
+npm run truffle:compile
 ```
 
-### Test 
+#### Test
 
 ```bash
-npm run test 
+npm run truffle:test
 ```
 
-### Code Coverage
+### Usage (using Hardhat)
+
+Open the Hardhat console
 
 ```bash
-npm run coverage
+npm run hardhat:console
+```
+
+#### Compile
+
+```bash
+npm run hardhat:compile
+```
+
+#### Test
+
+```bash
+npm run hardhat:test
+```
+
+#### Code Coverage
+
+```bash
+npm run hardhat:coverage
 ```
 
 ## Linter
